@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fieldset label="PLG_SYSTEM_GEOCODE_REDIRECTS" addfieldpath="plugins/system/geocode/forms/fields">
+        <field name="country" 
+            type="foreignkey" 
+            label="PLG_SYSTEM_GEOCODE_COUNTRY_LBL" 
+            description="PLG_SYSTEM_GEOCODE_COUNTRY_DESC" 
+            class="inputbox" 
+            input_type="list" 
+            table="#__location" key_field="country_iso_code" 
+            value_field="country_name" 
+            required="true" 
+            default=""/>
+		<field name="domain" 
+            type="text" 
+            filter="url" 
+            required="true" 
+            label="PLG_SYSTEM_GEOCODE_DOMAIN_LBL" 
+            description="PLG_SYSTEM_GEOCODE_DOMAIN_DESC" 
+            hint="PLG_SYSTEM_GEOCODE_DOMAIN_HINT"/>
+	</fieldset>
+</form>

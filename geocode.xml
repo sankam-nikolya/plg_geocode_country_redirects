@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<extension version="3.0" type="plugin" group="system" method="upgrade">
+	<name>PLG_SYSTEM_GEOCODE</name>
+	<author>Nikolya</author>
+	<creationDate>November 2016</creationDate>
+	<copyright>Copyright (C) 20011 - 2016 SNAKAM, Inc. All rights reserved.</copyright>
+	<license>GNU General Public License version 3 or later</license>
+	<authorEmail>k_m_i@i.ua</authorEmail>
+	<authorUrl>http://sankam.com.ua</authorUrl>
+	<version>1.0.0</version>
+	<description>PLG_SYSTEM_GEOCODE_XML_DESCRIPTION</description>
+	<install> <!-- Runs on install -->
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+	<update> <!-- Runs on update -->
+		<sql>
+			<file driver="mysql" charset="utf8">sql/update.mysql.utf8.sql</file>
+		</sql>
+	</update>
+	<uninstall> <!-- Runs on uninstall -->
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall>
+	<files>
+		<filename plugin="geocode">geocode.php</filename>
+		<filename>index.html</filename>
+		<folder>forms</folder>
+		<folder>sql</folder>
+		<folder>languages</folder>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="redirects-data" 
+				label="PLG_SYSTEM_GEOCODE_TAB_REDIRECTS">
+				<field name="rules" 
+					type="subform" 
+					max="1000" 
+					formsource="plugins/system/geocode/forms/redirects.xml"
+					multiple="true" layout="joomla.form.field.subform.repeatable-table"
+					label="PLG_SYSTEM_GEOCODE_REDIRECTS" 
+					buttons="add,remove"
+					hidden="hidden" />
+			</fieldset>
+			<fieldset name="languages-data" 
+				label="PLG_SYSTEM_GEOCODE_TAB_LANGUAGES">
+				<field
+					name="show_404"
+					type="radio"
+					label="PLG_SYSTEM_GEOCODE_SHOW_404_LBL"
+					description="PLG_SYSTEM_GEOCODE_SHOW_404_DESC"
+					class="btn-group btn-group-yesno"
+					default="1"
+					>
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field name="languages" 
+					type="subform" 
+					max="1000" 
+					formsource="plugins/system/geocode/forms/languages.xml"
+					multiple="true" layout="joomla.form.field.subform.repeatable-table"
+					label="PLG_SYSTEM_GEOCODE_LANGUAGES" 
+					buttons="add,remove"
+					hidden="hidden" />
+			</fieldset>
+		</fields>
+	</config>
+	<languages folder="languages">
+		<language tag="en-GB">en-GB/en-GB.plg_system_geocode.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_system_geocode.sys.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_system_geocode.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_system_geocode.sys.ini</language>
+	</languages>
+</extension>

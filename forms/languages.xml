@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fieldset label="PLG_SYSTEM_GEOCODE_LANGUAGES" addfieldpath="plugins/system/geocode/forms/fields">
+		<field name="domain" 
+			type="text" 
+			filter="url" 
+			required="true" 
+			label="PLG_SYSTEM_GEOCODE_DOMAIN_LBL" 
+			description="PLG_SYSTEM_GEOCODE_DOMAIN_DESC" 
+			hint="PLG_SYSTEM_GEOCODE_LANGUAGE_DOMAIN_HINT"/>
+		<field name="language" 
+			type="language" 
+			filter="safehtml" 
+			required="true" 
+			label="PLG_SYSTEM_GEOCODE_LANGUAGE_LBL" 
+			description="PLG_SYSTEM_GEOCODE_LANGUAGE_DESC"
+			hint="PLG_SYSTEM_GEOCODE_LANGUAGE_HINT"/>
+	</fieldset>
+</form>
