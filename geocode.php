@@ -16,7 +16,7 @@ class PlgSystemGeocode extends JPlugin
     private $country;
     private $app;
 
-   	/**
+    /**
      * Constructor.
      *
      * @param   object  &$subject  The object to observe.
@@ -37,7 +37,15 @@ class PlgSystemGeocode extends JPlugin
             return;
         }
 
-        $this->setDefaults();
+        $session = JFactory::getSession();
+
+        if(!$session->get('country', false) || !$session->get('default_language', false)) {
+            $this->setDefaults();
+        } else {
+            $this->country = $session->get('country', false);
+            $this->languge = $session->get('default_language', false);
+        }
+
         $this->loadParams();
     }
 
@@ -83,6 +91,8 @@ class PlgSystemGeocode extends JPlugin
         }
 
         if($ip) {
+            $ip = ip2long($ip);
+
             $db = JFactory::getDbo();
             $query = $db->getQuery(true);
 
@@ -107,7 +117,7 @@ class PlgSystemGeocode extends JPlugin
                 $db->quoteName('#__location', 'l') . ' ON (' . $db->quoteName('b.geoname_id') . ' = ' . $db->quoteName('l.id') . ')'
             );
             $query->where(
-                'INET_ATON('.$db->quote($ip).') BETWEEN ' . $db->quoteName('network_start') . ' AND ' . $db->quoteName('network_last')
+                $db->quote($ip).' BETWEEN ' . $db->quoteName('network_start') . ' AND ' . $db->quoteName('network_last')
             );
             $query->setLimit(1);
 
