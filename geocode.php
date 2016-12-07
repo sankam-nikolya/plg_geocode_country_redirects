@@ -15,6 +15,7 @@ class PlgSystemGeocode extends JPlugin
     private $languge;
     private $country;
     private $app;
+    private $redirect = true;
 
     /**
      * Constructor.
@@ -39,6 +40,38 @@ class PlgSystemGeocode extends JPlugin
 
         $session = JFactory::getSession();
 
+        $this->redirect = $session->get('redirect', true);
+        
+        if($this->redirect) {
+            $this->redirect = boolval($this->app->input->cookie->get(
+                JApplicationHelper::getHash('redirect'), 
+                true
+            ));
+        }
+
+        if(!$this->redirect) {
+            $is_changed = boolval($this->app->input->get('ref', false, 'string'));
+        } else {
+            $is_changed = true;
+        }
+
+        if($is_changed ) {
+            $this->redirect = false;
+            $session->set('redirect', true);
+            $cookie_expire = 0;
+            $cookie_domain = $this->app->get('cookie_domain');
+            $cookie_path   = $this->app->get('cookie_path', '/');
+            $cookie_secure = $this->app->isSSLConnection();
+            $this->app->input->cookie->set(
+                JApplicationHelper::getHash('redirect'), 
+                true, 
+                $cookie_expire, 
+                $cookie_path, 
+                $cookie_domain, 
+                $cookie_secure
+            );
+        }
+
         if(!$session->get('country', false) || !$session->get('default_language', false)) {
             $this->setDefaults();
         } else {
@@ -55,7 +88,7 @@ class PlgSystemGeocode extends JPlugin
      *
      * @since   2.5
      */
-    public function onBeforeRender()
+    public function onAfterRender()
     {
         if ($this->app->isAdmin())
         {
@@ -141,31 +174,31 @@ class PlgSystemGeocode extends JPlugin
             
         if (isset($_SERVER)) {
             if ($_SERVER['HTTP_CLIENT_IP']) {
-                $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+                $ip = $_SERVER['HTTP_CLIENT_IP'];
             } else if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
             } else if(isset($_SERVER['HTTP_X_FORWARDED'])) {
-                $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+                $ip = $_SERVER['HTTP_X_FORWARDED'];
             } else if(isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-                $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+                $ip = $_SERVER['HTTP_FORWARDED_FOR'];
             } else if(isset($_SERVER['HTTP_FORWARDED'])) {
-                $ipaddress = $_SERVER['HTTP_FORWARDED'];
+                $ip = $_SERVER['HTTP_FORWARDED'];
             } else if(isset($_SERVER['REMOTE_ADDR'])) {
-                $ipaddress = $_SERVER['REMOTE_ADDR'];
+                $ip = $_SERVER['REMOTE_ADDR'];
             }
         } else {
             if (getenv('HTTP_CLIENT_IP')) {
-                $ipaddress = getenv('HTTP_CLIENT_IP');
+                $ip = getenv('HTTP_CLIENT_IP');
             } else if(getenv('HTTP_X_FORWARDED_FOR')) {
-                $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
+                $ip = getenv('HTTP_X_FORWARDED_FOR');
             } else if(getenv('HTTP_X_FORWARDED')) {
-                $ipaddress = getenv('HTTP_X_FORWARDED');
+                $ip = getenv('HTTP_X_FORWARDED');
             } else if(getenv('HTTP_FORWARDED_FOR')) {
-                $ipaddress = getenv('HTTP_FORWARDED_FOR');
+                $ip = getenv('HTTP_FORWARDED_FOR');
             } else if(getenv('HTTP_FORWARDED')) {
-                $ipaddress = getenv('HTTP_FORWARDED');
+                $ip = getenv('HTTP_FORWARDED');
             } else if(getenv('REMOTE_ADDR')) {
-                $ipaddress = getenv('REMOTE_ADDR');
+                $ip = getenv('REMOTE_ADDR');
             }
         }
         
@@ -184,7 +217,7 @@ class PlgSystemGeocode extends JPlugin
         if(!empty($rules) && !empty($this->country)) {
             foreach ($rules as $rule) {
                 if($current_site != JUri::getInstance($rule->domain)->toString(array('host'))) {
-                    if($rule->country == $this->country->iso_code) {
+                    if($rule->country == $this->country->iso_code && $this->redirect) {
                         $this->app->redirect($rule->domain);
                     }
                 }
